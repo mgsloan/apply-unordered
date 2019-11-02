@@ -101,8 +101,10 @@ instance ApplyByType (MatchFirstArg a r) a r
     \x -> applyByTypeImpl (Proxy :: Proxy (MatchFirstArg a r)) (f x) y
   {-# INLINE applyByTypeImpl #-}
 
-instance TypeError (NoMatchForResultError a r) => ApplyByType 'NoArgToMatch a r where
-  type ApplyByTypeResult 'NoArgToMatch a r = TypeError (NoMatchForResultError a r)
+instance TypeError (NoMatchForResultError a r)
+      => ApplyByType 'NoArgToMatch a r where
+  type ApplyByTypeResult 'NoArgToMatch a r =
+    TypeError (NoMatchForResultError a r)
   applyByTypeImpl = error "impossible"
 
 --------------------------------------------------------------------------------
@@ -185,4 +187,4 @@ type AmbiguousMatchError a f =
   'ShowType a ':<>:
   'Text " occurs multiple times in the arguments of the function type " ':$$:
   'Text "  " ':<>: 'ShowType f ':$$:
-  'Text "and so cannot be applied via type directed application which requires unique match."
+  'Text "and so cannot be applied via unique type directed application."
