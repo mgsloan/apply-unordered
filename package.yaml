@@ -1,0 +1,28 @@
+name:                unordered-apply
+version:             0.1.0
+github:              "mgsloan/unordered-apply"
+license:             BSD3
+author:              "Michael Sloan"
+maintainer:          "mgsloan@gmail.com"
+copyright:           "2019 Michael Sloan"
+synopsis:            Apply functions to arguments in an unordered type-directed fashion
+category:            Functions
+
+extra-source-files:
+- readme.md
+- changelog.md
+
+description:         Please see the README on GitHub at <https://github.com/mgsloan/unordered-apply#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+
+tests:
+  unordered-apply-test:
+    main:                Spec.hs
+    source-dirs:         test
+    dependencies:
+    - unordered-apply
