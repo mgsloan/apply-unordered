@@ -67,12 +67,12 @@ data MatchArgResult
   | NoArgToMatch
 
 type family MatchFirstArg a f :: MatchArgResult where
-  MatchFirstArg a (a -> r) = 'Matches
-  MatchFirstArg a (b -> r) = 'Doesn'tMatch
+  MatchFirstArg a (a -> _) = 'Matches
+  MatchFirstArg a (b -> _) = 'Doesn'tMatch
   MatchFirstArg _ _ = 'NoArgToMatch
 
 type family HasAMatch a f f0 :: MatchArgResult where
-  HasAMatch a (a -> r) f0 = MatchFirstArg a f0
+  HasAMatch a (a -> _) f0 = MatchFirstArg a f0
   HasAMatch a (b -> r) f0 = HasAMatch a r f0
   HasAMatch a _ f0 = TypeError (NoMatchError a f0)
 
@@ -112,7 +112,7 @@ type family HasUniqueMatch a f f0 :: MatchArgResult where
   HasUniqueMatch a _ f0 = TypeError (NoMatchError a f0)
 
 type family CheckAmbiguousMatch a f f0 :: MatchArgResult where
-  CheckAmbiguousMatch a (a -> r) f0 = TypeError (AmbiguousMatchError a f0)
+  CheckAmbiguousMatch a (a -> _) f0 = TypeError (AmbiguousMatchError a f0)
   CheckAmbiguousMatch a (b -> r) f0 = CheckAmbiguousMatch a r f0
   CheckAmbiguousMatch a _ f0 = MatchFirstArg a f0
 
