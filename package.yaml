@@ -17,6 +17,16 @@ description:         Please see the README on GitHub at <https://github.com/mgsl
 dependencies:
 - base >= 4.7 && < 5
 
+default-extensions:
+- DataKinds
+- FlexibleContexts
+- FlexibleInstances
+- MultiParamTypeClasses
+- ScopedTypeVariables
+- TypeFamilies
+- TypeOperators
+- UndecidableInstances
+
 library:
   source-dirs: src
 
