@@ -1,3 +1,25 @@
+-- | This modules is an experiment in type family / typeclass
+-- machinery to provide type-directed function application and
+-- argument reordering. It is severely restricted, in that it only
+-- supports monomorphic arguments and parameters.
+--
+-- Few commonly known functions in base are monomorphic with multiple
+-- arguments, so I will use an example from @ Data.Text @:
+--
+-- > {-# LANGUAGE OverloadedStrings #-}
+-- > import qualified Data.Text as T
+-- >
+-- > ex1 :: Int -> T.Text
+-- > ex1 = T.replicate ? ("wow! " :: Text)
+--
+-- Cool! The '(?)' operator has magically provided the 2nd argument of
+-- @T.replicate@ (its type is @Int -> Text -> Text@).
+--
+-- This module also provides `reorderArgs`, which does this variety of
+-- function application in a variadic fashion.
+--
+-- > ex2 :: T.Text -> Int -> T.Text
+-- > ex2 = reorderArgs T.replicate
 module Control.UnorderedApply
   (
     -- * Type-directed function application which uses first match
@@ -16,7 +38,7 @@ module Control.UnorderedApply
     -- * Machinery for unique match function application
   , HasUniqueMatch
   , CheckAmbiguousMatch
-    -- * Machinery for reordering arguments
+    -- * Machinery for reordering parameters
   , HasArgResult(..)
   , HasArg
   , ReorderArgs
@@ -26,7 +48,10 @@ module Control.UnorderedApply
 import Data.Proxy (Proxy(..))
 import GHC.TypeLits (TypeError, ErrorMessage(..))
 
-applyByType, (?)
+-- | Applies a function to an argument, by providing the argument to
+-- the first parameter which matches the argument type. This does not
+-- handle any polymorphism in the function type or any argument types.
+applyByType
   :: forall matches a f.
      ( matches ~ HasAMatch a f f
      , ApplyByType matches a f
@@ -36,10 +61,21 @@ applyByType = applyByTypeImpl (Proxy :: Proxy matches)
 {-# INLINE applyByType #-}
 
 infixl 1 ?
+
+-- | Operator alias for 'applyByType'
+(?)
+  :: forall matches a f.
+     ( matches ~ HasAMatch a f f
+     , ApplyByType matches a f
+     )
+  => f -> a -> ApplyByTypeResult matches a f
 (?) = applyByType
 {-# INLINE (?) #-}
 
-applyByUniqueType, (?!)
+-- | Similarly to 'applyByType', applies a function to an argument by
+-- matching the argument type with the parameter type. If the match is
+-- ambiguous, this is a type error.
+applyByUniqueType
   :: forall matches a f.
      ( matches ~ HasUniqueMatch a f f
      , ApplyByType matches a f
@@ -49,33 +85,53 @@ applyByUniqueType = applyByTypeImpl (Proxy :: Proxy matches)
 {-# INLINE applyByUniqueType #-}
 
 infixl 1 ?!
+
+-- | Operator alias for 'applyByUniqueType'
+(?!)
+  :: forall matches a f.
+     ( matches ~ HasUniqueMatch a f f
+     , ApplyByType matches a f
+     )
+  => f -> a -> ApplyByTypeResult matches a f
 (?!) = applyByUniqueType
 {-# INLINE (?!) #-}
 
 reorderArgs :: forall f g. ReorderArgs (HasArg f) f g => f -> g
 reorderArgs = reorderArgsImpl (Proxy :: Proxy (HasArg f))
+{-# INLINE reorderArgs #-}
 
 reorderUniqueArgs :: forall f g. ReorderUniqueArgs (HasArg f) f g => f -> g
 reorderUniqueArgs = reorderUniqueArgsImpl (Proxy :: Proxy (HasArg f))
+{-# INLINE reorderUniqueArgs #-}
 
 --------------------------------------------------------------------------------
 -- Match machinery
 
+-- | A data-kind for 'MatchArgResult' to return.
 data MatchArgResult
-  = Matches
-  | Doesn'tMatch
-  | NoArgToMatch
+  = Matches         -- ^ Indicates the first argument matches.
+  | Doesn'tMatch    -- ^ Indicates the first argument doesn't match.
+  | NoArgToMatch    -- ^ Indicates the function has no first argument.
 
+-- | A type family which checks if the specified argument type matches
+-- the first parameter of a function.
 type family MatchFirstArg a f :: MatchArgResult where
   MatchFirstArg a (a -> _) = 'Matches
   MatchFirstArg a (b -> _) = 'Doesn'tMatch
   MatchFirstArg _ _ = 'NoArgToMatch
 
+-- | A type family which returns a 'TypeError', specifically
+-- 'NoMatchError', if the specified argument type matches none of the
+-- function parameter types. Otherwise, it behaves the same as
+-- 'MatchFirstArg'.
 type family HasAMatch a f f0 :: MatchArgResult where
   HasAMatch a (a -> _) f0 = MatchFirstArg a f0
   HasAMatch a (b -> r) f0 = HasAMatch a r f0
   HasAMatch a _ f0 = TypeError (NoMatchError a f0)
 
+-- | Typeclass used to implement 'applyByType'. The first type
+-- argument is used to select instances, and should always be
+-- @MatchFirstArg a f@.
 class ApplyByType (matches :: MatchArgResult) a f where
   type ApplyByTypeResult matches a f
   applyByTypeImpl
@@ -106,11 +162,16 @@ instance TypeError (NoMatchForResultError a r)
 --------------------------------------------------------------------------------
 -- Unique match machinery
 
+-- | A type family similar to 'HasAMatch', but also checks that
+-- there's a unique match for the argument type.
 type family HasUniqueMatch a f f0 :: MatchArgResult where
   HasUniqueMatch a (a -> r) f0 = CheckAmbiguousMatch a r f0
   HasUniqueMatch a (b -> r) f0 = HasUniqueMatch a r f0
   HasUniqueMatch a _ f0 = TypeError (NoMatchError a f0)
 
+-- | Used to implement 'HasUniqueMatch', this type family is used
+-- after the match is found. Any additional matches cause an
+-- 'AmbiguousMatchError'.
 type family CheckAmbiguousMatch a f f0 :: MatchArgResult where
   CheckAmbiguousMatch a (a -> _) f0 = TypeError (AmbiguousMatchError a f0)
   CheckAmbiguousMatch a (b -> r) f0 = CheckAmbiguousMatch a r f0
@@ -119,12 +180,19 @@ type family CheckAmbiguousMatch a f f0 :: MatchArgResult where
 --------------------------------------------------------------------------------
 -- Argument reordering machinery
 
-data HasArgResult = ArgPresent | NoArg
+-- | A data-kind for 'HasArg' to return.
+data HasArgResult
+  = ArgPresent    -- ^ Indicates that the type is a function type.
+  | NoArg         -- ^ Indicates that the type is not a function type.
 
+-- | Checks whether the specified type is a function type ( @ -> @ ).
 type family HasArg f :: HasArgResult where
   HasArg (_ -> _) = 'ArgPresent
   HasArg _ = 'NoArg
 
+-- | Typeclass used to implement 'reorderArgs'. The first type
+-- argument is used to select instances, and should always be @HasArg
+-- f@.
 class ReorderArgs (fHasArg :: HasArgResult) f g where
   reorderArgsImpl :: Proxy fHasArg -> f -> g
 
@@ -143,6 +211,9 @@ instance r1 ~ r2 => ReorderArgs 'NoArg r1 r2 where
   reorderArgsImpl _ f = f
   {-# INLINE reorderArgsImpl #-}
 
+-- | Typeclass used to implement 'reorderUniqueArgs'. The first type
+-- argument is used to select instances, and should always be @HasArg
+-- f@.
 class ReorderUniqueArgs (fHasArg :: HasArgResult) f g where
   reorderUniqueArgsImpl :: Proxy fHasArg -> f -> g
 
