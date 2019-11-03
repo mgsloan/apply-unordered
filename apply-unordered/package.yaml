@@ -1,6 +1,6 @@
-name:                unordered-apply
+name:                apply-unordered
 version:             0.1.0
-github:              "mgsloan/unordered-apply"
+github:              "mgsloan/apply-experiments"
 license:             BSD3
 author:              "Michael Sloan"
 maintainer:          "mgsloan@gmail.com"
@@ -9,10 +9,9 @@ synopsis:            Apply functions to arguments in an unordered type-directed 
 category:            Functions
 
 extra-source-files:
-- readme.md
 - changelog.md
 
-description:         Please see the README on GitHub at <https://github.com/mgsloan/unordered-apply#readme>
+description:         Please see the README on GitHub at <https://github.com/mgsloan/apply-experiments#readme>
 
 dependencies:
 - base >= 4.9 && < 5
@@ -31,10 +30,10 @@ library:
   source-dirs: src
 
 tests:
-  unordered-apply-test:
+  apply-unordered-test:
     main:                Spec.hs
     source-dirs:         test
     dependencies:
-    - unordered-apply
+    - apply-unordered
     - should-not-typecheck
     - hspec

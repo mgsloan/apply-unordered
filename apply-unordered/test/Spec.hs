@@ -2,7 +2,7 @@
 
 module Main where
 
-import Control.UnorderedApply
+import Control.Apply.Unordered
 import Test.Hspec
 import Test.ShouldNotTypecheck (shouldNotTypecheck)
 
