@@ -7,6 +7,7 @@ module Control.UnorderedApply
     -- * Type-directed function application which requires unique match
   , applyByUniqueType
   , reorderUniqueArgs
+  , (?!)
     -- * Machinery for type directed function application
   , MatchArgResult(..)
   , MatchFirstArg
@@ -38,7 +39,7 @@ infixl 1 ?
 (?) = applyByType
 {-# INLINE (?) #-}
 
-applyByUniqueType
+applyByUniqueType, (?!)
   :: forall matches a f.
      ( matches ~ HasUniqueMatch a f f
      , ApplyByType matches a f
@@ -46,6 +47,10 @@ applyByUniqueType
   => f -> a -> ApplyByTypeResult matches a f
 applyByUniqueType = applyByTypeImpl (Proxy :: Proxy matches)
 {-# INLINE applyByUniqueType #-}
+
+infixl 1 ?!
+(?!) = applyByUniqueType
+{-# INLINE (?!) #-}
 
 reorderArgs :: forall f g. ReorderArgs (HasArg f) f g => f -> g
 reorderArgs = reorderArgsImpl (Proxy :: Proxy (HasArg f))
