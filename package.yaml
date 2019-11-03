@@ -36,3 +36,5 @@ tests:
     source-dirs:         test
     dependencies:
     - unordered-apply
+    - should-not-typecheck
+    - hspec
