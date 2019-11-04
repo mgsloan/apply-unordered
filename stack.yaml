@@ -1,3 +1,4 @@
 resolver: lts-14.12
 packages:
 - apply-unordered
+- apply-positional

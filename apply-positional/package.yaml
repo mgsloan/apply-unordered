@@ -1,0 +1,40 @@
+name:                apply-positional
+version:             0.1.0
+github:              "mgsloan/apply-experiments"
+license:             BSD3
+author:              "Michael Sloan"
+maintainer:          "mgsloan@gmail.com"
+copyright:           "2019 Michael Sloan"
+synopsis:            Apply a function to an argument specified by a type level Nat
+category:            Functions
+
+extra-source-files:
+- changelog.md
+
+description:         Please see the README on GitHub at <https://github.com/mgsloan/apply-experiments#readme>
+
+dependencies:
+- base >= 4.9 && < 5
+- fin >= 0.1
+
+default-extensions:
+- DataKinds
+- FlexibleContexts
+- FlexibleInstances
+- MultiParamTypeClasses
+- ScopedTypeVariables
+- TypeApplications
+- TypeFamilies
+- TypeOperators
+
+library:
+  source-dirs: src
+
+tests:
+  apply-positional-test:
+    main:                Spec.hs
+    source-dirs:         test
+    dependencies:
+    - apply-positional
+    - should-not-typecheck
+    - hspec
