@@ -1,3 +1,5 @@
+{-# LANGUAGE UndecidableInstances #-}
+
 -- | This modules is an experiment in type family / typeclass
 -- machinery to provide type-directed function application and
 -- argument reordering. It is severely restricted, in that it only

@@ -24,7 +24,6 @@ default-extensions:
 - ScopedTypeVariables
 - TypeFamilies
 - TypeOperators
-- UndecidableInstances
 
 library:
   source-dirs: src
