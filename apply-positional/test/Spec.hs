@@ -16,3 +16,5 @@ main = hspec $ do
       applyN @1 replicateChar 'c' 3 `shouldBe` "ccc"
     it "handles polymorphic functions" $
       applyN @1 div 2 4 `shouldBe` 2
+    it "yields type error for out of bounds nats" $
+      shouldNotTypecheck (applyN @2 replicateChar 'c' 3 :: String)
