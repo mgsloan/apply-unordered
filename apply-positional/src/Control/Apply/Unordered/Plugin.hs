@@ -62,7 +62,8 @@ data BestMatchResult
 
 findBestMatch :: Type -> Type -> BestMatchResult
 findBestMatch arg fun =
-  case foldr addMatch [] (pprTraceIt "candidates" (candidateMatches (pprTraceIt "arg" arg) 0 (pprTraceIt "fun" fun))) of
+--  case foldr addMatch [] (pprTraceIt "candidates" (candidateMatches (pprTraceIt "arg" arg) 0 (pprTraceIt "fun" fun))) of
+  case foldr addMatch [] (candidateMatches arg 0 fun) of
     [] -> NoMatch
     [(ix, _)] -> BestMatch ix
     matches -> AmbiguousMatch matches
@@ -95,7 +96,6 @@ addMatch new_item (old_item : old_items)
 candidateMatches :: Type -> Integer -> Type -> [(Integer, Type)]
 candidateMatches arg ix = \case
   FunTy paramTy resultTy
---    | pprTraceIt "matches" (isJust (tcMatchTy (pprTraceIt "param" paramTy) (pprTraceIt "arg" arg))) ->
     | isJust (tcMatchTy paramTy arg) ->
         (ix, paramTy) : candidateMatches arg (ix + 1) resultTy
     | otherwise ->
