@@ -68,7 +68,7 @@ findBestMatch arg fun =
     [(ix, _)] -> BestMatch ix
     matches -> AmbiguousMatch matches
 
--- This logic was directly inspired by the function insert_overalpping
+-- This logic was directly inspired by the function insert_overlapping
 -- in ghc/compiler/types/InstEnv.hs
 addMatch :: (Integer, Type) -> [(Integer, Type)] -> [(Integer, Type)]
 addMatch new_item [] = [new_item]
