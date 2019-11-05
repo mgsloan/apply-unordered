@@ -17,6 +17,11 @@ dependencies:
 - base >= 4.9 && < 5
 - fin >= 0.1
 
+# For the ghc plugin
+- ghc >= 8.6
+- syb >= 0.7
+- ghc-tcplugins-extra >= 0.3
+
 default-extensions:
 - DataKinds
 - FlexibleContexts
@@ -26,6 +31,7 @@ default-extensions:
 - TypeApplications
 - TypeFamilies
 - TypeOperators
+- PolyKinds
 
 library:
   source-dirs: src
@@ -34,6 +40,8 @@ tests:
   apply-positional-test:
     main:                Spec.hs
     source-dirs:         test
+    ghc-options:
+    - -fplugin=Control.Apply.Unordered.Plugin
     dependencies:
     - apply-positional
     - should-not-typecheck

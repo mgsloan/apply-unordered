@@ -4,7 +4,8 @@
 -- | FIXME
 module Control.Apply.Positional
   ( applyN
-  , ApplyAt
+  , applyN'
+  , ApplyAt(ApplyAtResult)
   , CheckArity
   ) where
 
