@@ -121,13 +121,13 @@ type family MatchFirstArg a f :: MatchArgResult where
   MatchFirstArg _ _ = 'NoArgToMatch
 
 -- | A type family which returns a 'TypeError', specifically
--- 'NoMatchError', if the specified argument type matches none of the
--- function parameter types. Otherwise, it behaves the same as
+-- 'NoMatchErrorMsg', if the specified argument type matches none of
+-- the function parameter types. Otherwise, it behaves the same as
 -- 'MatchFirstArg'.
 type family HasAMatch a f f0 :: MatchArgResult where
   HasAMatch a (a -> _) f0 = MatchFirstArg a f0
   HasAMatch a (b -> r) f0 = HasAMatch a r f0
-  HasAMatch a _ f0 = TypeError (NoMatchError a f0)
+  HasAMatch a _ f0 = TypeError (NoMatchErrorMsg a f0)
 
 -- | Typeclass used to implement 'applyByType'. The first type
 -- argument is used to select instances, and should always be
@@ -153,10 +153,10 @@ instance ApplyByType (MatchFirstArg a r) a r
     \x -> applyByTypeImpl (Proxy :: Proxy (MatchFirstArg a r)) (f x) y
   {-# INLINE applyByTypeImpl #-}
 
-instance TypeError (NoMatchForResultError a r)
+instance TypeError (NoMatchForResultErrorMsg a r)
       => ApplyByType 'NoArgToMatch a r where
   type ApplyByTypeResult 'NoArgToMatch a r =
-    TypeError (NoMatchForResultError a r)
+    TypeError (NoMatchForResultErrorMsg a r)
   applyByTypeImpl = error "impossible"
 
 --------------------------------------------------------------------------------
@@ -167,13 +167,13 @@ instance TypeError (NoMatchForResultError a r)
 type family HasUniqueMatch a f f0 :: MatchArgResult where
   HasUniqueMatch a (a -> r) f0 = CheckAmbiguousMatch a r f0
   HasUniqueMatch a (b -> r) f0 = HasUniqueMatch a r f0
-  HasUniqueMatch a _ f0 = TypeError (NoMatchError a f0)
+  HasUniqueMatch a _ f0 = TypeError (NoMatchErrorMsg a f0)
 
 -- | Used to implement 'HasUniqueMatch', this type family is used
 -- after the match is found. Any additional matches cause an
--- 'AmbiguousMatchError'.
+-- 'AmbiguousMatchErrorMsg'.
 type family CheckAmbiguousMatch a f f0 :: MatchArgResult where
-  CheckAmbiguousMatch a (a -> _) f0 = TypeError (AmbiguousMatchError a f0)
+  CheckAmbiguousMatch a (a -> _) f0 = TypeError (AmbiguousMatchErrorMsg a f0)
   CheckAmbiguousMatch a (b -> r) f0 = CheckAmbiguousMatch a r f0
   CheckAmbiguousMatch a _ f0 = MatchFirstArg a f0
 
@@ -235,21 +235,21 @@ instance r1 ~ r2 => ReorderUniqueArgs 'NoArg r1 r2 where
 --------------------------------------------------------------------------------
 -- Type error messages
 
-type NoMatchError a f =
+type NoMatchErrorMsg a f =
   'Text "Parameter type " ':<>:
   'ShowType a ':<>:
   'Text " does not occur in the arguments of the function type " ':$$:
   'Text "  " ':<>: 'ShowType f ':$$:
   'Text "and so cannot be applied via type directed application."
 
-type NoMatchForResultError a r =
+type NoMatchForResultErrorMsg a r =
   'Text "Parameter type " ':<>:
   'ShowType a ':<>:
   'Text " does not occur in the arguments of the function that returns " ':$$:
   'Text "  " ':<>: 'ShowType r ':$$:
   'Text "and so cannot be applied via type directed application."
 
-type AmbiguousMatchError a f =
+type AmbiguousMatchErrorMsg a f =
   'Text "Parameter type " ':<>:
   'ShowType a ':<>:
   'Text " occurs multiple times in the arguments of the function type " ':$$:
