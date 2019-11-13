@@ -22,7 +22,7 @@
 --
 -- > ex2 :: T.Text -> Int -> T.Text
 -- > ex2 = reorderArgs T.replicate
-module Control.Apply.Unordered
+module Control.Apply.Unordered.Mono
   (
     -- * Type-directed function application which uses first match
     applyByType

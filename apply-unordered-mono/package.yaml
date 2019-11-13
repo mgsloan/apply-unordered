@@ -1,4 +1,4 @@
-name:                apply-unordered
+name:                apply-unordered-mono
 version:             0.1.0
 github:              "mgsloan/apply-experiments"
 license:             BSD3
@@ -33,6 +33,6 @@ tests:
     main:                Spec.hs
     source-dirs:         test
     dependencies:
-    - apply-unordered
+    - apply-unordered-mono
     - should-not-typecheck
     - hspec

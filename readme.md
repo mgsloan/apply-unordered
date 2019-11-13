@@ -1,4 +1,4 @@
-# apply-unordered
+# apply-unordered-mono
 
 This package is an experiment in type family / typeclass machinery to
 provide type-directed function application and argument reordering. It
@@ -6,7 +6,7 @@ is severely restricted, in that it only supports monomorphic arguments
 and parameters.  This allows you to do stuff like the following:
 
 ```haskell
-import Control.Apply.Unordered ((?), reorderArgs)
+import Control.Apply.Unordered.Mono ((?), reorderArgs)
 
 -- These will have the same value, "ccc", even though the arguments are
 -- provided in a different order!
