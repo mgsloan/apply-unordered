@@ -4,12 +4,11 @@
 module Main where
 
 import Control.Apply.Positional
+import Control.Apply.Unordered
+import Data.Proxy
+import GHC.TypeLits
 import Test.Hspec
 import Test.ShouldNotTypecheck (shouldNotTypecheck)
-
-import Data.Proxy
-import Control.Apply.Unordered
-import GHC.TypeLits
 
 replicateChar :: Int -> Char -> String
 replicateChar = replicate
