@@ -1,6 +1,6 @@
 name:                apply-unordered-mono
 version:             0.1.0
-github:              "mgsloan/apply-experiments"
+github:              "mgsloan/apply-unordered"
 license:             BSD3
 author:              "Michael Sloan"
 maintainer:          "mgsloan@gmail.com"
@@ -11,7 +11,7 @@ category:            Functions
 extra-source-files:
 - changelog.md
 
-description:         Please see the README on GitHub at <https://github.com/mgsloan/apply-experiments#readme>
+description:         Please see the README on GitHub at <https://github.com/mgsloan/apply-unordered#readme>
 
 dependencies:
 - base >= 4.9 && < 5
