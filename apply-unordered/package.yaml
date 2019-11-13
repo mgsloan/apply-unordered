@@ -1,4 +1,4 @@
-name:                apply-positional
+name:                apply-unordered
 version:             0.1.0
 github:              "mgsloan/apply-experiments"
 license:             BSD3
@@ -43,6 +43,6 @@ tests:
     ghc-options:
     - -fplugin=Control.Apply.Unordered.Plugin
     dependencies:
-    - apply-positional
+    - apply-unordered
     - should-not-typecheck
     - hspec

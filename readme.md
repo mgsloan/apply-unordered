@@ -44,7 +44,7 @@ interesting. Particularly:
 * Incorrect usage often results in decent type errors, via custom type
   error messages.
 
-# apply-positional
+# apply-unordered
 
 I wrote this package after `apply-unordered`. The goal is to do this
 unordered application, but in a way that is compatible with Haskell's
@@ -64,10 +64,6 @@ polymorphism. Here's how it works:
 * `Control.Apply.Unordered` sticks `BestParamIxImpl` together with the
   `applyAt` machinery to yield a better `?` function that can handle
   polymorphic functions!
-
-  - Note this module is *different* than the one of the same name
-    provided by the `apply-unordered` package - will probably fix that
-    soon
 
 This already seems to work well, but the code could use some more
 polish and testing.

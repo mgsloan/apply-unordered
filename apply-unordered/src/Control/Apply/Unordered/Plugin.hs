@@ -36,7 +36,7 @@ data Context = Context
 initContext :: TcPluginM Context
 initContext = Context
   <$> loadTyCon
-        "apply-positional"
+        "apply-unordered"
         "Control.Apply.Unordered"
         "BestParamIxImpl"
 
