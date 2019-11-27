@@ -31,6 +31,11 @@ plugin = defaultPlugin
 
 data Context = Context
   { familyTyCon :: TyCon
+  , typeErrorTyCon :: TyCon
+  {-
+  , textTyCon :: TyCon
+  , showTypeTyCon :: TyCon
+  -}
   }
 
 initContext :: TcPluginM Context
@@ -39,6 +44,20 @@ initContext = Context
         "apply-unordered"
         "Control.Apply.Unordered"
         "BestParamIxImpl"
+  <*> loadTyCon
+        "base"
+        "GHC.TypeLits"
+        "TypeError"
+        {-
+  <*> loadTyCon
+        "base"
+        "GHC.TypeLits"
+        "Text"
+  <*> loadTyCon
+        "base"
+        "GHC.TypeLits"
+        "ShowType"
+-}
 
 implementTyFam :: Context -> [Type] -> Maybe Type
 implementTyFam context [a, b] = do
