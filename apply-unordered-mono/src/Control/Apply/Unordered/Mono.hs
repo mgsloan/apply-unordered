@@ -54,7 +54,7 @@ import GHC.TypeLits (TypeError, ErrorMessage(..))
 -- the first parameter which matches the argument type. This does not
 -- handle any polymorphism in the function type or any argument types.
 applyByType
-  :: forall matches a f.
+  :: forall a f matches.
      ( matches ~ HasAMatch a f f
      , ApplyByType matches a f
      )
@@ -66,7 +66,7 @@ infixl 1 ?
 
 -- | Operator alias for 'applyByType'
 (?)
-  :: forall matches a f.
+  :: forall a f matches.
      ( matches ~ HasAMatch a f f
      , ApplyByType matches a f
      )
@@ -78,7 +78,7 @@ infixl 1 ?
 -- matching the argument type with the parameter type. If the match is
 -- ambiguous, this is a type error.
 applyByUniqueType
-  :: forall matches a f.
+  :: forall a f matches.
      ( matches ~ HasUniqueMatch a f f
      , ApplyByType matches a f
      )
@@ -90,7 +90,7 @@ infixl 1 ?!
 
 -- | Operator alias for 'applyByUniqueType'
 (?!)
-  :: forall matches a f.
+  :: forall a f matches.
      ( matches ~ HasUniqueMatch a f f
      , ApplyByType matches a f
      )

@@ -12,7 +12,7 @@ import Control.Apply.Positional
 infixl 1 ?
 
 (?)
-  :: forall gn a f n.
+  :: forall a f gn n.
      ( gn ~ BestParamIxImpl a f
      , n ~ FromGHC gn
      , CheckArity gn f n f
