@@ -46,9 +46,9 @@ interesting. Particularly:
 
 # apply-unordered
 
-I wrote this package after `apply-unordered`. The goal is to do this
-unordered application, but in a way that is compatible with Haskell's
-polymorphism. Here's how it works:
+The goal of `apply-ordered` is to do this same unordered application,
+but in a way that is compatible with Haskell's polymorphism. Here's how
+it works:
 
 * `Control.Apply.Positional` provides an `applyAt` function which lets
   you write `(applyAt @1 replicateChar 'c') 3`. The `@1` specifies the
