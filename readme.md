@@ -1,9 +1,19 @@
-# apply-unordered-mono
+This repo contains two related packages:
 
-This package is an experiment in type family / typeclass machinery to
+* `apply-unordered-mono`, which uses type family / typeclass machinery to
 provide type-directed function application and argument reordering. It
 is severely restricted, in that it only supports monomorphic arguments
-and parameters.  This allows you to do stuff like the following:
+and parameters.
+
+* `apply-unordered`, which uses similar machinery, but also provides a
+GHC plugin in order to support type-directed function application on
+polymorphic functions.  The plugin uses the same logic as overlapping
+instances for resolving which parameter each argument should be passed
+to.
+
+# apply-unordered-mono
+
+Example of use:
 
 ```haskell
 import Control.Apply.Unordered.Mono ((?), reorderArgs)
@@ -18,7 +28,7 @@ replicateChar :: Int -> Char -> String
 replicateChar = replicate
 ```
 
-It also provides a function for type directed re-ordering of arguments:
+It also provides a function for type-directed re-ordering of arguments:
 
 ```
 f1 :: A -> B -> C -> D
