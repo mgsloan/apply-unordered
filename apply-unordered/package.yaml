@@ -6,7 +6,7 @@ author:              "Michael Sloan"
 maintainer:          "mgsloan@gmail.com"
 copyright:           "2019 Michael Sloan"
 synopsis:            Apply a function to an argument specified by a type level Nat
-category:            Functions
+category:            Functions, ACME, Compiler Plugin
 
 extra-source-files:
 - changelog.md

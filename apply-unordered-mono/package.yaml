@@ -6,7 +6,7 @@ author:              "Michael Sloan"
 maintainer:          "mgsloan@gmail.com"
 copyright:           "2019 Michael Sloan"
 synopsis:            Apply functions to arguments in an unordered type-directed fashion
-category:            Functions
+category:            Functions, ACME
 
 extra-source-files:
 - changelog.md
