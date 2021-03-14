@@ -11,6 +11,9 @@ polymorphic functions.  The plugin uses the same logic as overlapping
 instances for resolving which parameter each argument should be passed
 to.
 
+The `didactic` directory provides a few different versions of
+`apply-unordered-mono`, for explanatory purposes.
+
 # apply-unordered-mono
 
 Example of use:
