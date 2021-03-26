@@ -1,7 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
 
--- TODO: Cleanup this module, right now it's just the state at the end
--- of a hacking session to bring it to proof-of-concept.
 module Control.Apply.Unordered.Plugin where
 
 import Control.Monad (guard)
@@ -32,10 +30,6 @@ plugin = defaultPlugin
 data Context = Context
   { familyTyCon :: TyCon
   , typeErrorTyCon :: TyCon
-  {-
-  , textTyCon :: TyCon
-  , showTypeTyCon :: TyCon
-  -}
   }
 
 initContext :: TcPluginM Context
@@ -48,16 +42,6 @@ initContext = Context
         "base"
         "GHC.TypeLits"
         "TypeError"
-        {-
-  <*> loadTyCon
-        "base"
-        "GHC.TypeLits"
-        "Text"
-  <*> loadTyCon
-        "base"
-        "GHC.TypeLits"
-        "ShowType"
--}
 
 implementTyFam :: Context -> [Type] -> Maybe Type
 implementTyFam context [a, b] = do
@@ -81,7 +65,6 @@ data BestMatchResult
 
 findBestMatch :: Type -> Type -> BestMatchResult
 findBestMatch arg fun =
---  case foldr addMatch [] (pprTraceIt "candidates" (candidateMatches (pprTraceIt "arg" arg) 0 (pprTraceIt "fun" fun))) of
   case foldr addMatch [] (candidateMatches arg 0 fun) of
     [] -> NoMatch
     [(ix, _)] -> BestMatch ix
