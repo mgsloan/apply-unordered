@@ -37,13 +37,15 @@ instance ApplyByType (MatchFirstArg a r) a r
   applyByTypeImpl _ f y =
     \x -> applyByTypeImpl (Proxy :: Proxy (MatchFirstArg a r)) (f x) y
 
-applyByType
+infixl 1 ?
+
+(?)
   :: forall matches a f.
      ( matches ~ MatchFirstArg a f
      , ApplyByType matches a f
      )
   => f -> a -> ApplyByTypeResult matches a f
-applyByType = applyByTypeImpl (Proxy :: Proxy matches)
+(?) = applyByTypeImpl (Proxy :: Proxy matches)
 
 -- Usage
 
@@ -51,4 +53,4 @@ replicateChars :: Int -> Char -> String
 replicateChars = replicate
 
 main :: IO ()
-main = print (replicateChars `applyByType` 'a' `applyByType` (10 :: Int))
+main = print (replicateChars ? 'a' ? (10 :: Int))

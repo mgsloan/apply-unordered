@@ -18,6 +18,3 @@ how apply-unordered works.
 * `v5.hs` version improves the custom error message via a type family
   that recurses on the function type, but also passes the full
   function type for reporting.
-
-* `v6.hs` version improves the error messaging by reducing the number
-  of type errors reported.

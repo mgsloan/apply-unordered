@@ -39,28 +39,25 @@ instance ApplyByType (MatchFirstArg a r) a r
   applyByTypeImpl _ f y =
     \x -> applyByTypeImpl (Proxy :: Proxy (MatchFirstArg a r)) (f x) y
 
-instance TypeError (NoMatchForResultError a r) => ApplyByType 'NoArgToMatch a r where
-  type ApplyByTypeResult 'NoArgToMatch a r = TypeError (NoMatchForResultError a r)
+instance TypeError (NoMatchForResultError a r)
+      => ApplyByType 'NoArgToMatch a r where
+  type ApplyByTypeResult 'NoArgToMatch a r =
+    TypeError (NoMatchForResultError a r)
   applyByTypeImpl = error "impossible"
 
 type NoMatchForResultError a r =
-  'Text "Parameter type " ':<>:
-  'ShowType a ':<>:
-  'Text " does not occur in the arguments of the function that returns " ':$$:
+  'Text "Parameter type " ':$$:
+  'Text "  " ':<>: 'ShowType a ':$$:
+  'Text "does not occur in the arguments of the function that returns " ':$$:
   'Text "  " ':<>: 'ShowType r ':$$:
   'Text "and so cannot be applied via type directed application."
 
-applyByType
+infixl 1 ?
+
+(?)
   :: forall matches a f.
      ( matches ~ MatchFirstArg a f
      , ApplyByType matches a f
      )
   => f -> a -> ApplyByTypeResult matches a f
-applyByType = applyByTypeImpl (Proxy :: Proxy matches)
-
--- Demo of type error
-
-replicateChars :: Int -> Char -> String
-replicateChars = replicate
-
-shouldBeATypeError = replicateChars `applyByType` "a"
+(?) = applyByTypeImpl (Proxy :: Proxy matches)
