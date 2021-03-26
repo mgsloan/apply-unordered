@@ -238,22 +238,26 @@ instance r1 ~ r2 => ReorderUniqueArgs 'NoArg r1 r2 where
 -- Type error messages
 
 type NoMatchErrorMsg a f =
-  'Text "Parameter type " ':<>:
-  'ShowType a ':<>:
-  'Text " does not occur in the arguments of the function type " ':$$:
+  'Text "Parameter type " ':$$:
+  'Text "  " ':<>: 'ShowType a ':$$:
+  'Text "does not occur in the arguments of the function type " ':$$:
   'Text "  " ':<>: 'ShowType f ':$$:
   'Text "and so cannot be applied via type directed application."
 
+-- This case may not be necessary, but I recall having examples where
+-- it happens instead of NoMatchErrorMsg.  Unfortunately, I don't seem
+-- to have written down those examples.
+
 type NoMatchForResultErrorMsg a r =
-  'Text "Parameter type " ':<>:
-  'ShowType a ':<>:
-  'Text " does not occur in the arguments of the function that returns " ':$$:
+  'Text "Parameter type " ':$$:
+  'Text "  " ':<>: 'ShowType a ':$$:
+  'Text "does not occur in the arguments of the function that returns " ':$$:
   'Text "  " ':<>: 'ShowType r ':$$:
   'Text "and so cannot be applied via type directed application."
 
 type AmbiguousMatchErrorMsg a f =
-  'Text "Parameter type " ':<>:
-  'ShowType a ':<>:
+  'Text "Parameter type " ':$$:
+  'Text "  " :<>: 'ShowType a ':<>:
   'Text " occurs multiple times in the arguments of the function type " ':$$:
   'Text "  " ':<>: 'ShowType f ':$$:
   'Text "and so cannot be applied via unique type directed application."
