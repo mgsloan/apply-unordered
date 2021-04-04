@@ -4,9 +4,13 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 
+module V4 where
+
 import Data.Proxy (Proxy(..))
+import GHC.TypeLits (TypeError, ErrorMessage(..))
 
 data MatchArgResult
   = Matches
@@ -37,6 +41,19 @@ instance ApplyByType (MatchFirstArg a r) a r
   applyByTypeImpl _ f y =
     \x -> applyByTypeImpl (Proxy :: Proxy (MatchFirstArg a r)) (f x) y
 
+instance TypeError (NoMatchForResultError a r)
+      => ApplyByType 'NoArgToMatch a r where
+  type ApplyByTypeResult 'NoArgToMatch a r =
+    TypeError (NoMatchForResultError a r)
+  applyByTypeImpl = error "impossible"
+
+type NoMatchForResultError a r =
+  'Text "Parameter type " ':$$:
+  'Text "  " ':<>: 'ShowType a ':$$:
+  'Text "does not occur in the arguments of the function that returns " ':$$:
+  'Text "  " ':<>: 'ShowType r ':$$:
+  'Text "and so cannot be applied via type directed application."
+
 infixl 1 ?
 
 (?)
@@ -46,11 +63,3 @@ infixl 1 ?
      )
   => f -> a -> ApplyByTypeResult matches a f
 (?) = applyByTypeImpl (Proxy :: Proxy matches)
-
--- Usage
-
-replicateChars :: Int -> Char -> String
-replicateChars = replicate
-
-main :: IO ()
-main = print (replicateChars ? 'a' ? (10 :: Int))

@@ -1,3 +1,4 @@
+{-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
@@ -7,7 +8,10 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 
+module V5 where
+
 import Data.Proxy (Proxy(..))
+import GHC.Exts (Constraint)
 import GHC.TypeLits (TypeError, ErrorMessage(..))
 
 data MatchArgResult
@@ -39,24 +43,24 @@ instance ApplyByType (MatchFirstArg a r) a r
   applyByTypeImpl _ f y =
     \x -> applyByTypeImpl (Proxy :: Proxy (MatchFirstArg a r)) (f x) y
 
-instance TypeError (NoMatchForResultError a r)
-      => ApplyByType 'NoArgToMatch a r where
-  type ApplyByTypeResult 'NoArgToMatch a r =
-    TypeError (NoMatchForResultError a r)
-  applyByTypeImpl = error "impossible"
+type family HasAMatch a f f0 :: Constraint where
+  HasAMatch a (a -> r) f0 = ()
+  HasAMatch a (b -> r) f0 = HasAMatch a r f0
+  HasAMatch a _ f0 = TypeError (NoMatchErrorMsg a f0)
 
-type NoMatchForResultError a r =
+type NoMatchErrorMsg a f =
   'Text "Parameter type " ':$$:
   'Text "  " ':<>: 'ShowType a ':$$:
-  'Text "does not occur in the arguments of the function that returns " ':$$:
-  'Text "  " ':<>: 'ShowType r ':$$:
+  'Text "does not occur in the arguments of the function type " ':$$:
+  'Text "  " ':<>: 'ShowType f ':$$:
   'Text "and so cannot be applied via type directed application."
 
 infixl 1 ?
 
 (?)
   :: forall matches a f.
-     ( matches ~ MatchFirstArg a f
+     ( HasAMatch a f f
+     , matches ~ MatchFirstArg a f
      , ApplyByType matches a f
      )
   => f -> a -> ApplyByTypeResult matches a f

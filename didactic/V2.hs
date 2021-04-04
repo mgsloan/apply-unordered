@@ -2,6 +2,8 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies #-}
 
+module V2 where
+
 type family ApplyByTypeResult a f where
   ApplyByTypeResult a (a -> r) = r
   ApplyByTypeResult a (b -> r) = b -> ApplyByTypeResult a r

@@ -2,6 +2,8 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies #-}
 
+module V1 where
+
 infixl 1 ?
 
 class ApplyByType a f where
