@@ -210,7 +210,7 @@ instance
   {-# INLINE reorderArgsImpl #-}
 
 instance r1 ~ r2 => ReorderArgs 'NoArg r1 r2 where
-  reorderArgsImpl _ f = f
+  reorderArgsImpl _ x = x
   {-# INLINE reorderArgsImpl #-}
 
 -- | Typeclass used to implement 'reorderUniqueArgs'. The first type
